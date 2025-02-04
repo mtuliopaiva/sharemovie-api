@@ -31,68 +31,62 @@ class MovieController {
     }
   }
 
-  // static async getUsers(req, res, next) {
-  //   try {
-  //     const users = await User.find().select("-password");
-  //     res.status(200).json(users);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+  static async getMovies(req, res, next) {
+    try {
+      const movies = await Movie.find();
+      res.status(200).json(movies);
+    } catch (error) {
+      next(error);
+    }
+  }
 
-  // static async getUserById(req, res, next) {
-  //   try {
-  //     const { id } = req.params;
-  //     const user = await User.findById(id).select("-password");
-  //     if (!user) {
-  //       return res.status(404).json({ message: "User not found" });
-  //     }
-  //     res.status(200).json(user);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+  static async getMovieById(req, res, next) {
+    try {
+      const { id } = req.params;
+      const movie = await Movie.findById(id);
+      if (!movie) {
+        return res.status(404).json({ message: "Movie not found" });
+      }
+      res.status(200).json(movie);
+    } catch (error) {
+      next(error);
+    }
+  }
 
-  // static async updateUser(req, res, next) {
-  //   try {
-  //     const { id } = req.params;
-  //     const { name, email, password } = req.body;
+  static async updateMovie(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { title, synopsis, director, duration, categories } = req.body;
 
-  //     if (!name && !email && !password) {
-  //       return res
-  //         .status(400)
-  //         .json({ message: "At least one field is required for update." });
-  //     }
+      const updatedMovie = await Movie.findByIdAndUpdate(
+        id,
+        { title, synopsis, director, duration, categories },
+        { new: true, runValidators: true }
+      );
 
-  //     const updatedUser = await User.findByIdAndUpdate(
-  //       id,
-  //       { name, email, password },
-  //       { new: true, runValidators: true }
-  //     );
+      if (!updatedMovie) {
+        return res.status(404).json({ message: "Movie not found" });
+      }
 
-  //     if (!updatedUser) {
-  //       return res.status(404).json({ message: "User not found" });
-  //     }
+      res
+        .status(200)
+        .json({ message: "Movie updated successfully.", movie: updatedMovie });
+    } catch (error) {
+      next(error);
+    }
+  }
 
-  //     res
-  //       .status(200)
-  //       .json({ message: "User updated successfully.", user: updatedUser });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+  static deleteMovie = async (req, res, next) => {
+    try {
+      const { id } = req.params;
 
-  // static deleteUser = async (req, res, next) => {
-  //   try {
-  //     const { id } = req.params;
+      await Movie.findByIdAndDelete(id);
 
-  //     await User.findByIdAndDelete(id);
-
-  //     res.status(200).send({ message: "User deleted successfully" });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
+      res.status(200).send({ message: "Movie deleted successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default MovieController;
