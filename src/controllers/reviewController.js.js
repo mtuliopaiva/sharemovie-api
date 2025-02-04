@@ -37,50 +37,47 @@ class ReviewController {
     }
   }
 
-  // static async getMovies(req, res, next) {
-  //   try {
-  //     const movies = await Movie.find();
-  //     res.status(200).json(movies);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+  static async getReviews(req, res, next) {
+    try {
+      const reviews = await Review.find();
+      res.status(200).json(reviews);
+    } catch (error) {
+      next(error);
+    }
+  }
 
-  // static async getMovieById(req, res, next) {
-  //   try {
-  //     const { id } = req.params;
-  //     const movie = await Movie.findById(id);
-  //     if (!movie) {
-  //       return res.status(404).json({ message: "Movie not found" });
-  //     }
-  //     res.status(200).json(movie);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+  static async getReviewById(req, res, next) {
+    try {
+      const { id } = req.params;
+      const review = await Review.findById(id);
+      if (!review) {
+        return res.status(404).json({ message: "Review not found" });
+      }
+      res.status(200).json(review);
+    } catch (error) {
+      next(error);
+    }
+  }
 
-  // static async updateMovie(req, res, next) {
-  //   try {
-  //     const { id } = req.params;
-  //     const { title, synopsis, director, duration, categories } = req.body;
+  static async updateReview(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { user, rating, comment } = req.body;
 
-  //     const updatedMovie = await Movie.findByIdAndUpdate(
-  //       id,
-  //       { title, synopsis, director, duration, categories },
-  //       { new: true, runValidators: true }
-  //     );
+      const updatedReview = await Review.findByIdAndUpdate(
+        id,
+        { user, rating, comment },
+        { new: true }
+      );
 
-  //     if (!updatedMovie) {
-  //       return res.status(404).json({ message: "Movie not found" });
-  //     }
-
-  //     res
-  //       .status(200)
-  //       .json({ message: "Movie updated successfully.", movie: updatedMovie });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+      res.status(200).json({
+        message: "Review updated successfully",
+        review: updatedReview,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 
   static deleteReview = async (req, res, next) => {
     try {
